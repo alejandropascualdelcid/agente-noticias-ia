@@ -1,0 +1,69 @@
+# Fuentes que revisa el agente cada día.
+# Puedes añadir o quitar líneas libremente: si una fuente falla, el agente la ignora y sigue.
+
+# Blogs oficiales y medios con RSS
+rss:
+  # Laboratorios y empresas (oficial)
+  - nombre: OpenAI
+    url: https://openai.com/news/rss.xml
+  - nombre: Google DeepMind
+    url: https://deepmind.google/blog/rss.xml
+  - nombre: Google AI
+    url: https://blog.google/technology/ai/rss/
+  - nombre: Hugging Face
+    url: https://huggingface.co/blog/feed.xml
+  # Medios tecnológicos
+  - nombre: TechCrunch
+    url: https://techcrunch.com/category/artificial-intelligence/feed/
+  - nombre: The Verge
+    url: https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
+  - nombre: VentureBeat
+    url: https://venturebeat.com/category/ai/feed/
+  - nombre: MIT Technology Review
+    url: https://www.technologyreview.com/topic/artificial-intelligence/feed
+  - nombre: Ars Technica
+    url: https://arstechnica.com/ai/feed/
+  - nombre: Wired
+    url: https://www.wired.com/feed/tag/ai/latest/rss
+  - nombre: Simon Willison
+    url: https://simonwillison.net/atom/everything/
+  - nombre: Xataka
+    url: https://www.xataka.com/feedburner.xml
+    filtrar_ia: true   # medio generalista: solo nos quedamos con lo que hable de IA
+  # Comunidades
+  - nombre: Reddit r/LocalLLaMA
+    url: https://www.reddit.com/r/LocalLLaMA/top/.rss?t=day
+  - nombre: Reddit r/singularity
+    url: https://www.reddit.com/r/singularity/top/.rss?t=day
+  - nombre: Reddit r/OpenAI
+    url: https://www.reddit.com/r/OpenAI/top/.rss?t=day
+  - nombre: Reddit r/ClaudeAI
+    url: https://www.reddit.com/r/ClaudeAI/top/.rss?t=day
+
+# Búsquedas en Google News (últimas 24 h). Cubren empresas sin RSS propio.
+google_news:
+  - consulta: 'OpenAI OR ChatGPT OR "Sam Altman"'
+  - consulta: 'Anthropic OR "Claude AI" OR "Dario Amodei"'
+  - consulta: 'ElevenLabs'
+  - consulta: 'DeepSeek OR Qwen OR "Alibaba AI" OR Kimi OR Zhipu OR MiniMax OR "ByteDance AI"'
+  - consulta: '"AI regulation" OR "AI Act" OR "AI executive order" OR "AI safety bill"'
+  - consulta: 'xAI OR Grok OR "Elon Musk AI"'
+  - consulta: '"Google Gemini" OR "Meta AI" OR Llama OR "Mistral AI"'
+  - consulta: 'Nvidia AI chips OR "AI data center" OR "AI training"'
+  - consulta: '"Model Context Protocol" OR "MCP server" OR "AI agents"'
+  - consulta: '"inteligencia artificial"'
+    idioma: es
+
+# Repositorios nuevos en GitHub con muchas estrellas (herramientas, MCPs, agentes)
+github:
+  - consulta: 'mcp in:name,description,topics'
+    min_estrellas: 40
+  - consulta: 'llm OR ai-agent OR agents in:name,description,topics'
+    min_estrellas: 80
+
+# Hacker News: historias de las últimas 30 h con más de N puntos que hablen de IA
+hacker_news:
+  min_puntos: 100
+
+# Modelos en tendencia en Hugging Face
+hugging_face_trending: 10

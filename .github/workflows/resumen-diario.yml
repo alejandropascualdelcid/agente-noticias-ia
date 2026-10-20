@@ -1,0 +1,61 @@
+name: Resumen diario de IA
+
+on:
+  schedule:
+    # GitHub usa hora UTC y no cambia con el horario de verano.
+    # Se lanza varias veces por la mañana y el script solo envía cuando en Madrid
+    # ya es la HORA_ENVIO y todavía no se ha enviado el resumen de hoy.
+    - cron: "5 7 * * *"
+    - cron: "5 8 * * *"
+    - cron: "5 9 * * *"
+    - cron: "5 10 * * *"
+  workflow_dispatch:
+    inputs:
+      forzar:
+        description: "Enviar ahora aunque no sea la hora o ya se haya enviado hoy"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: resumen-diario
+  cancel-in-progress: false
+
+jobs:
+  resumen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Recoger, analizar y enviar
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HORA_ENVIO: ${{ vars.HORA_ENVIO }}
+          NUMERO_NOTICIAS: ${{ vars.NUMERO_NOTICIAS }}
+          MODELO_CLAUDE: ${{ vars.MODELO_CLAUDE }}
+        run: python -m agente.main ${{ inputs.forzar && '--forzar' || '' }}
+
+      - name: Guardar el resumen en el repositorio
+        run: |
+          git config user.name "agente-noticias-ia"
+          git config user.email "agente-noticias-ia@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "Nada nuevo que guardar"
+          else
+            git commit -m "Resumen IA $(TZ=Europe/Madrid date +%F)"
+            git push
+          fi
